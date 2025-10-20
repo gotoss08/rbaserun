@@ -43,7 +43,10 @@ fn parse_base_path(input_path: &str) -> Result<PathKind, Box<dyn Error>> {
 }
 
 fn parse_base_simple_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
-    let captures = Regex::new(r"(.+);(.+)").unwrap().captures(input).ok_or("expected pattern: host;ref")?;
+    let captures = Regex::new(r"(.+);(.+)")
+        .unwrap()
+        .captures(input)
+        .ok_or("expected pattern: host;ref")?;
     Ok(PathKind::Server {
         host: captures[1].to_string(),
         ref_name: captures[2].to_string(),
@@ -51,7 +54,10 @@ fn parse_base_simple_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
 }
 
 fn parse_base_server_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
-    let captures = Regex::new(r#""(.+)".+"(.+)""#).unwrap().captures(input).ok_or("expected pattern: Srvr=\"host\";Ref=\"ref\";")?;
+    let captures = Regex::new(r#""(.+)".+"(.+)""#)
+        .unwrap()
+        .captures(input)
+        .ok_or("expected pattern: Srvr=\"host\";Ref=\"ref\";")?;
     Ok(PathKind::Server {
         host: captures[1].to_string(),
         ref_name: captures[2].to_string(),
@@ -59,14 +65,20 @@ fn parse_base_server_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
 }
 
 fn parse_base_file_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
-    let captures = Regex::new(r#""(.+)""#).unwrap().captures(&input).ok_or("expected pattern: File=\"<path>\";")?;
+    let captures = Regex::new(r#""(.+)""#)
+        .unwrap()
+        .captures(&input)
+        .ok_or("expected pattern: File=\"<path>\";")?;
     Ok(PathKind::File {
         path: captures[1].to_string(),
     })
 }
 
 fn parse_base_web_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
-    let captures = Regex::new(r#""(.+)""#).unwrap().captures(input).ok_or("expected pattern: ws=\"<url>\";")?;
+    let captures = Regex::new(r#""(.+)""#)
+        .unwrap()
+        .captures(input)
+        .ok_or("expected pattern: ws=\"<url>\";")?;
     Ok(PathKind::Web {
         url: captures[1].to_string(),
     })
@@ -77,7 +89,7 @@ fn launch_base(path: PathKind, designer: bool) -> Result<(), Box<dyn Error>> {
     let starter = Path::new(r#"c:\Program Files\1cv8\common\1cestart.exe"#);
 
     if !starter.exists() {
-        return Err(format!("Could not locate 1C starter app: '{}'", starter.display()).into())
+        return Err(format!("Could not locate 1C starter app: '{}'", starter.display()).into());
     }
 
     let launch_mode = if designer { "DESIGNER" } else { "ENTERPRISE" };
@@ -85,7 +97,7 @@ fn launch_base(path: PathKind, designer: bool) -> Result<(), Box<dyn Error>> {
     match path {
         PathKind::Server { host, ref_name } => {
             Command::new(starter)
-                .args([launch_mode, "/S", &format!("{host}/{ref_name}")])
+                .args([launch_mode, "/S", &format!("{host}\\{ref_name}")])
                 .spawn()?;
         }
 
@@ -113,11 +125,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Err(e) => {
             eprintln!("Parsing error: {}", e);
             std::process::exit(1);
-        },
+        }
     };
 
     match launch_base(parsed_path, cli.designer) {
-        Ok(()) => {},
+        Ok(()) => {}
         Err(e) => {
             eprintln!("Launcher error: {}", e);
             std::process::exit(1);
