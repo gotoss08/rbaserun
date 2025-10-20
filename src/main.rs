@@ -5,7 +5,6 @@ use ratatui::{
     crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers},
     layout::{Constraint, Layout, Rect},
     style::{Style, Stylize},
-    text::Text,
     widgets::{Block, List, ListState, Paragraph},
 };
 
