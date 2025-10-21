@@ -56,10 +56,10 @@ fn parse_base_path(input_path: &str) -> Result<PathKind, Box<dyn Error>> {
 }
 
 fn parse_base_simple_form(input: &str) -> Result<PathKind, Box<dyn Error>> {
-    let captures = Regex::new(r"(.+);(.+)")
+    let captures = Regex::new(r"(.+)[;/\\](.+)")
         .unwrap()
         .captures(input)
-        .ok_or("expected pattern: host;ref")?;
+        .ok_or("expected pattern: host[;/\\]ref")?;
     Ok(PathKind::Server {
         host: captures[1].to_string(),
         ref_name: captures[2].to_string(),
