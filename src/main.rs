@@ -236,7 +236,7 @@ impl App {
 
     fn add_to_history(&mut self, path: String) -> Result<(), std::io::Error> {
         if !self.history.contains(&path) {
-            self.history.push(path);
+            self.history.insert(0, path);
         } else if let Some(index) = self.history.iter().position(|x| x.to_string() == path.to_string()) {
             let removed_value = self.history.remove(index);
             self.history.insert(0, removed_value);
